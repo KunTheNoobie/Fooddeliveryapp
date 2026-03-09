@@ -112,14 +112,13 @@ Thank you for ordering with QuickBite!
                 })}
               </span>
             </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-sm mt-2">
               <span className="text-gray-600">Payment Method</span>
               <span className="font-medium">{getPaymentMethodName(paymentMethod)}</span>
             </div>
           </div>
 
-          {/* Items */}
-          <div className="border-b pb-4 mb-4">
+          <div className="space-y-2 mb-6">
             <h4 className="font-semibold mb-3">Order Items</h4>
             {items.map((item, index) => (
               <div key={index} className="flex justify-between text-sm mb-2">
@@ -129,27 +128,26 @@ Thank you for ordering with QuickBite!
                 <span>RM {(item.price * item.quantity).toFixed(2)}</span>
               </div>
             ))}
-          </div>
 
-          {/* Summary */}
-          <div className="space-y-2 mb-6">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Subtotal</span>
-              <span>RM {subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Delivery Fee</span>
-              <span>RM {deliveryFee.toFixed(2)}</span>
-            </div>
-            {discount > 0 && (
+            <div className="border-t pt-4 mt-4 space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-green-600">Discount</span>
-                <span className="text-green-600">-RM {discount.toFixed(2)}</span>
+                <span className="text-gray-600">Subtotal</span>
+                <span>RM {subtotal.toFixed(2)}</span>
               </div>
-            )}
-            <div className="flex justify-between font-bold text-lg pt-2 border-t">
-              <span>Total Paid</span>
-              <span className="text-orange-600">RM {total.toFixed(2)}</span>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Delivery Fee</span>
+                <span>RM {deliveryFee.toFixed(2)}</span>
+              </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-green-600">Discount</span>
+                  <span className="text-green-600">-RM {discount.toFixed(2)}</span>
+                </div>
+              )}
+              <div className="flex justify-between font-bold text-lg pt-2 border-t">
+                <span>Total Paid</span>
+                <span className="text-orange-600">RM {total.toFixed(2)}</span>
+              </div>
             </div>
           </div>
 
