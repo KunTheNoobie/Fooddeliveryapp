@@ -18,6 +18,7 @@ export interface Order {
     restaurantName: string;
     riderName: string;
     date: string;
+    deliveryAddress?: string;
     rating?: OrderRating;
 }
 

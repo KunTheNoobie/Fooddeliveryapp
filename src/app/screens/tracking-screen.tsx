@@ -17,6 +17,7 @@ export function TrackingScreen() {
   const [riderPosition, setRiderPosition] = useState({ x: 200, y: 150 });
   const riderName = activeOrder?.riderName || "Ahmad Rizal";
   const restaurantName = activeOrder?.restaurantName || "QuickBite";
+  const deliveryAddress = activeOrder?.deliveryAddress || "Your Location";
 
   // Simulate rider movement
   useEffect(() => {
@@ -90,7 +91,7 @@ export function TrackingScreen() {
             <circle cx="300" cy="70" r="10" fill="#10B981" />
             <circle cx="300" cy="70" r="6" fill="white" />
             <text x="300" y="95" textAnchor="middle" fontSize="12" fill="#374151" fontWeight="600">
-              Tower B
+              {deliveryAddress.split(',')[0]}
             </text>
 
             {/* Rider icon (animated position) */}
@@ -107,7 +108,7 @@ export function TrackingScreen() {
         <div className="absolute top-4 left-4 bg-white rounded-lg px-3 py-2 shadow-md flex items-center gap-2">
           <MapPin className="w-4 h-4 text-orange-600" />
           <span className="text-sm font-medium">
-            {eta > 0 ? "En route to Tower B" : "Arrived at Tower B"}
+            {eta > 0 ? `En route to ${deliveryAddress.split(',')[0]}` : `Arrived at ${deliveryAddress.split(',')[0]}`}
           </span>
         </div>
       </div>
@@ -160,7 +161,7 @@ export function TrackingScreen() {
         {/* Delivery Instructions */}
         <div className="bg-white rounded-lg p-4 mt-4 shadow-sm">
           <h3 className="font-semibold mb-2">Delivery Instructions</h3>
-          <p className="text-sm text-gray-600">Drop off at Guardhouse</p>
+          <p className="text-sm text-gray-600">Drop off at {deliveryAddress}</p>
           <p className="text-xs text-gray-500 mt-1">
             Please call upon arrival
           </p>

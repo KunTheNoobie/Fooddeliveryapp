@@ -17,7 +17,7 @@ export function PaymentScreen() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showCardForm, setShowCardForm] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
-  const [currentOrderId, setCurrentOrderId] = useState("");
+  const [completedOrder, setCompletedOrder] = useState<any>(null);
 
   const subtotal = getCartTotal();
   const deliveryFee = 5.00;
@@ -28,8 +28,6 @@ export function PaymentScreen() {
     if (isProcessing) {
       const timer = setTimeout(() => {
         const orderNumber = `#QB${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
-        setCurrentOrderId(orderNumber);
-
         const newOrder = {
           id: orderNumber,
           items: [...cart], // copy current cart items
@@ -41,8 +39,10 @@ export function PaymentScreen() {
           restaurantName: cart.length > 0 ? cart[0].restaurantName : "QuickBite",
           riderName: "Ahmad Rizal",
           date: new Date().toISOString(),
+          deliveryAddress: "Tower B, KL", // default mock value
         };
 
+        setCompletedOrder(newOrder);
         addOrder(newOrder);
         setActiveOrder(newOrder);
         clearCart();
@@ -199,22 +199,20 @@ export function PaymentScreen() {
       )}
 
       {/* Receipt Modal */}
-      <ReceiptModal
-        isOpen={showReceipt}
-        onClose={() => setShowReceipt(false)}
-        orderNumber={currentOrderId}
-        items={cart.length > 0 ? cart.map(item => ({
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-        })) : []}
-        subtotal={subtotal}
-        deliveryFee={deliveryFee}
-        discount={discount}
-        total={total}
-        paymentMethod={paymentMethod}
-        onViewTracking={handleViewTracking}
-      />
+      {completedOrder && (
+        <ReceiptModal
+          isOpen={showReceipt}
+          onClose={() => setShowReceipt(false)}
+          orderNumber={completedOrder.id}
+          items={completedOrder.items}
+          subtotal={completedOrder.subtotal}
+          deliveryFee={completedOrder.deliveryFee}
+          discount={completedOrder.discount}
+          total={completedOrder.total}
+          paymentMethod={completedOrder.paymentMethod}
+          onViewTracking={handleViewTracking}
+        />
+      )}
     </div>
   );
 }
