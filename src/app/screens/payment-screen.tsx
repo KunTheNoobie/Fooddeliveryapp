@@ -207,7 +207,7 @@ export function PaymentScreen() {
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-        }))}
+        })) : []}
         subtotal={subtotal}
         deliveryFee={deliveryFee}
         discount={discount}

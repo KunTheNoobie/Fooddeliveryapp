@@ -181,7 +181,7 @@ export function TrackingScreen() {
             <div className="flex justify-between text-sm">
               <span className="text-gray-600 w-1/3">Items</span>
               <span className="font-medium text-right">
-                {activeOrder?.items.map(item => \`\${item.quantity}x \${item.name}\`).join(", ") || "1x Nasi Lemak"}
+                {activeOrder?.items.map((item: any) => `${item.quantity}x ${item.name}`).join(", ") || "1x Nasi Lemak"}
               </span>
             </div>
           </div>
