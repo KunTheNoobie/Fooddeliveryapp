@@ -103,22 +103,22 @@ export function CartScreen() {
         {/* Summary */}
         <div className="bg-white rounded-lg p-4 mt-4 shadow-sm space-y-3">
           <h3 className="font-semibold mb-3">Order Summary</h3>
-          
+
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Subtotal</span>
             <span>RM {subtotal.toFixed(2)}</span>
           </div>
-          
+
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Delivery Fee</span>
             <span>RM {deliveryFee.toFixed(2)}</span>
           </div>
-          
+
           <div className="flex justify-between text-sm">
             <span className="text-green-600">Discount</span>
             <span className="text-green-600">-RM {discount.toFixed(2)}</span>
           </div>
-          
+
           <div className="border-t pt-3 flex justify-between font-semibold text-lg">
             <span>Total</span>
             <span className="text-orange-600">RM {total.toFixed(2)}</span>
@@ -127,7 +127,7 @@ export function CartScreen() {
       </div>
 
       {/* Sticky Bottom Button */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-gray-200 p-4">
         <Button
           onClick={() => navigate("/payment")}
           className="w-full h-12 bg-orange-600 hover:bg-orange-700"

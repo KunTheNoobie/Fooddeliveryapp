@@ -13,13 +13,13 @@ export function ItemScreen() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  
+
   const item = foodItems.find(item => item.id === id) || foodItems[0];
-  
+
   const [selectedCustomizations, setSelectedCustomizations] = useState<string[]>([]);
   const [selectedPortionIndex, setSelectedPortionIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  
+
   const basePrice = item.price;
   const portionExtra = item.customizations.portionOptions[selectedPortionIndex].price;
   const pricePerItem = basePrice + portionExtra;
@@ -87,7 +87,7 @@ export function ItemScreen() {
         <div className="space-y-6">
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <h2 className="text-lg font-semibold mb-4">Customize Your Order</h2>
-            
+
             <div className="space-y-4">
               {item.customizations.checkboxes.map((customization) => (
                 <div key={customization} className="flex items-center space-x-2">
@@ -110,8 +110,8 @@ export function ItemScreen() {
           {/* Portion Size */}
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <h3 className="font-semibold mb-3">Portion Size</h3>
-            <RadioGroup 
-              value={selectedPortionIndex.toString()} 
+            <RadioGroup
+              value={selectedPortionIndex.toString()}
               onValueChange={(value) => setSelectedPortionIndex(parseInt(value))}
             >
               {item.customizations.portionOptions.map((option, index) => (
@@ -152,7 +152,7 @@ export function ItemScreen() {
       </div>
 
       {/* Sticky Bottom Button */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-gray-200 p-4">
         <Button
           onClick={handleAddToCart}
           className="w-full h-12 bg-orange-600 hover:bg-orange-700"

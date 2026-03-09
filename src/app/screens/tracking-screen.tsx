@@ -182,7 +182,13 @@ export function TrackingScreen() {
             <div className="flex justify-between text-sm">
               <span className="text-gray-600 w-1/3">Items</span>
               <span className="font-medium text-right">
-                {activeOrder?.items.map((item: any) => `${item.quantity}x ${item.name}`).join(", ") || "1x Nasi Lemak"}
+                {activeOrder?.items ? (() => {
+                  const grouped: Record<string, number> = {};
+                  activeOrder.items.forEach((item: any) => {
+                    grouped[item.name] = (grouped[item.name] || 0) + item.quantity;
+                  });
+                  return Object.entries(grouped).map(([name, qty]) => `${qty}x ${name}`).join(", ");
+                })() : "1x Nasi Lemak"}
               </span>
             </div>
           </div>

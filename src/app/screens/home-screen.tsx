@@ -61,7 +61,7 @@ export function HomeScreen() {
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
       <div className="bg-white px-4 pt-6 pb-4 shadow-sm">
-        <button 
+        <button
           className="flex items-center gap-2 mb-4 hover:bg-gray-50 p-2 rounded-lg -ml-2"
           onClick={() => setShowLocationModal(true)}
         >
@@ -87,11 +87,10 @@ export function HomeScreen() {
             <Badge
               key={filter.id}
               variant="outline"
-              className={`px-4 py-2 rounded-full whitespace-nowrap cursor-pointer ${
-                selectedFilter === filter.id
+              className={`px-4 py-2 rounded-full whitespace-nowrap cursor-pointer ${selectedFilter === filter.id
                   ? "bg-orange-600 text-white border-orange-600"
                   : "border-orange-600 text-orange-600"
-              }`}
+                }`}
               onClick={() => setSelectedFilter(selectedFilter === filter.id ? null : filter.id)}
             >
               {filter.label}
@@ -131,15 +130,15 @@ export function HomeScreen() {
         <h2 className="text-lg font-semibold mb-3">
           {searchQuery ? `Search Results (${filteredItems.length})` : (
             selectedFilter === "halal" ? "Halal Food" :
-            selectedFilter === "budget" ? "Under RM15" :
-            selectedFilter === "fastest" ? "Quick Bites" :
-            selectedFilter === "vegetarian" ? "Vegetarian Options" :
-            selectedFilter === "spicy" ? "Spicy Dishes" :
-            selectedFilter === "popular" ? "Popular Choices" :
-            "Popular Dishes"
+              selectedFilter === "budget" ? "Under RM15" :
+                selectedFilter === "fastest" ? "Quick Bites" :
+                  selectedFilter === "vegetarian" ? "Vegetarian Options" :
+                    selectedFilter === "spicy" ? "Spicy Dishes" :
+                      selectedFilter === "popular" ? "Popular Choices" :
+                        "Popular Dishes"
           )}
         </h2>
-        
+
         {filteredItems.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500">No items found</p>
@@ -201,12 +200,11 @@ export function HomeScreen() {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3 flex justify-around">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-gray-200 px-6 py-3 flex justify-around">
         <button
           onClick={() => setActiveTab("home")}
-          className={`flex flex-col items-center gap-1 ${
-            activeTab === "home" ? "text-orange-600" : "text-gray-400"
-          }`}
+          className={`flex flex-col items-center gap-1 ${activeTab === "home" ? "text-orange-600" : "text-gray-400"
+            }`}
         >
           <Home className="w-6 h-6" />
           <span className="text-xs">Home</span>
@@ -216,9 +214,8 @@ export function HomeScreen() {
             setActiveTab("orders");
             navigate("/orders");
           }}
-          className={`flex flex-col items-center gap-1 ${
-            activeTab === "orders" ? "text-orange-600" : "text-gray-400"
-          }`}
+          className={`flex flex-col items-center gap-1 ${activeTab === "orders" ? "text-orange-600" : "text-gray-400"
+            }`}
         >
           <ShoppingBag className="w-6 h-6" />
           <span className="text-xs">Orders</span>
@@ -228,9 +225,8 @@ export function HomeScreen() {
             setActiveTab("profile");
             navigate("/profile");
           }}
-          className={`flex flex-col items-center gap-1 ${
-            activeTab === "profile" ? "text-orange-600" : "text-gray-400"
-          }`}
+          className={`flex flex-col items-center gap-1 ${activeTab === "profile" ? "text-orange-600" : "text-gray-400"
+            }`}
         >
           <User className="w-6 h-6" />
           <span className="text-xs">Profile</span>
@@ -246,9 +242,8 @@ export function HomeScreen() {
               {["Office Tower B, KL", "Home - Petaling Jaya", "KLCC Convention Centre", "Bangsar Shopping Centre"].map((location) => (
                 <button
                   key={location}
-                  className={`w-full text-left p-3 rounded-lg border hover:bg-gray-50 ${
-                    currentLocation === location ? "border-orange-600 bg-orange-50" : ""
-                  }`}
+                  className={`w-full text-left p-3 rounded-lg border hover:bg-gray-50 ${currentLocation === location ? "border-orange-600 bg-orange-50" : ""
+                    }`}
                   onClick={() => {
                     setCurrentLocation(location);
                     setShowLocationModal(false);
