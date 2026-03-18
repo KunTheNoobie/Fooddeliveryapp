@@ -5,20 +5,33 @@ import { Input } from "../components/ui/input";
 import { Apple } from "lucide-react";
 
 export function AuthScreen() {
+  const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleContinue = () => {
     const phoneRegex = /^[\d\s+\-()]{8,15}$/;
+    if (!isLogin && !name.trim()) {
+      setError("Name is required");
+      return;
+    }
+    if (!isLogin && !email.trim()) {
+      setError("Email is required");
+      return;
+    }
     if (!phoneNumber) {
       setError("Phone number is required");
+      return;
     } else if (!phoneRegex.test(phoneNumber)) {
       setError("Please enter a valid phone number");
-    } else {
-      setError("");
-      navigate("/home");
-    }
+      return;
+    } 
+    
+    setError("");
+    navigate("/home");
   };
 
   return (
@@ -30,8 +43,45 @@ export function AuthScreen() {
           <p className="mt-2 text-gray-600">Fast food, faster delivery</p>
         </div>
 
-        {/* Phone Input */}
+        {/* Input Fields */}
         <div className="space-y-4">
+          {!isLogin && (
+            <>
+              <div>
+                <label htmlFor="name" className="block text-sm text-gray-700 mb-2">
+                  Full Name
+                </label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (error) setError("");
+                  }}
+                  className={`h-12 ${error && error.toLowerCase().includes("name") ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="john@example.com"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError("");
+                  }}
+                  className={`h-12 ${error && error.toLowerCase().includes("email") ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                />
+              </div>
+            </>
+          )}
+
           <div>
             <label htmlFor="phone" className="block text-sm text-gray-700 mb-2">
               Enter Phone Number
@@ -45,7 +95,7 @@ export function AuthScreen() {
                 setPhoneNumber(e.target.value);
                 if (error) setError("");
               }}
-              className={`h-12 ${error ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+              className={`h-12 ${error && error.toLowerCase().includes("phone") ? "border-red-500 focus-visible:ring-red-500" : ""}`}
             />
             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
@@ -54,7 +104,7 @@ export function AuthScreen() {
             onClick={handleContinue}
             className="w-full h-12 bg-orange-600 hover:bg-orange-700"
           >
-            Continue
+            {isLogin ? "Log In" : "Sign Up"}
           </Button>
         </div>
 
@@ -104,6 +154,22 @@ export function AuthScreen() {
             <Apple className="w-5 h-5 mr-2" />
             Continue with Apple
           </Button>
+        </div>
+
+        {/* Toggle Login/Signup */}
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-600">
+            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+            <button
+              onClick={() => {
+                setIsLogin(!isLogin);
+                setError("");
+              }}
+              className="font-medium text-orange-600 hover:text-orange-500 underline"
+            >
+              {isLogin ? "Sign up" : "Log in"}
+            </button>
+          </p>
         </div>
       </div>
     </div>
