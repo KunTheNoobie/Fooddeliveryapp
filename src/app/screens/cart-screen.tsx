@@ -110,6 +110,20 @@ export function CartScreen() {
           </div>
         </div>
 
+        {/* Apply Voucher */}
+        <div className="bg-white rounded-lg p-4 mt-4 shadow-sm">
+          <div className="flex gap-2">
+            <input 
+              type="text" 
+              placeholder="Enter Promo Code" 
+              className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500"
+            />
+            <Button className="bg-orange-600 hover:bg-orange-700 whitespace-nowrap">
+              Apply Voucher
+            </Button>
+          </div>
+        </div>
+
         {/* Summary */}
         <div className="bg-white rounded-lg p-4 mt-4 shadow-sm space-y-3">
           <h3 className="font-semibold mb-3">Order Summary</h3>

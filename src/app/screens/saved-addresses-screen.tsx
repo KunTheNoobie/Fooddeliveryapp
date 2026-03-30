@@ -81,8 +81,18 @@ export function SavedAddressesScreen() {
                                     required
                                 />
                             </div>
-                            <div className="flex gap-2">
-                                <Button type="submit" className="flex-1 bg-orange-600 hover:bg-orange-700">Add</Button>
+                            
+                            {/* Map Coordinates Visual Placeholder */}
+                            <div className="w-full h-32 bg-gray-100 rounded-md border border-gray-200 overflow-hidden relative flex items-center justify-center mt-2">
+                                <div className="absolute inset-0 opacity-10 bg-orange-200" style={{ backgroundImage: "linear-gradient(#f9731633 1px, transparent 1px), linear-gradient(90deg, #f9731633 1px, transparent 1px)", backgroundSize: "20px 20px" }}></div>
+                                <div className="z-10 flex flex-col items-center">
+                                    <MapPin className="w-8 h-8 text-orange-600 mb-1" />
+                                    <span className="text-xs text-gray-600 font-medium bg-white/90 px-2 py-1 rounded shadow-sm border border-gray-200">Pin Accurate Coordinates</span>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-2 pt-2">
+                                <Button type="submit" className="flex-1 bg-orange-600 hover:bg-orange-700">Save Address</Button>
                                 <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
                             </div>
                         </div>
