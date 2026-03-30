@@ -1,3 +1,10 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+/* Constrain global toast notifications to the 430px mobile bounding box */
+@media (min-width: 440px) {
+  [data-sonner-toaster] {
+    right: calc(50vw - 215px + 16px) !important;
+  }
+}

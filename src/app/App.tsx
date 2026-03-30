@@ -9,7 +9,7 @@ export default function App() {
     <CartProvider>
       <OrderProvider>
         <RouterProvider router={router} />
-        <Toaster />
+        <Toaster position="top-right" />
       </OrderProvider>
     </CartProvider>
   );
