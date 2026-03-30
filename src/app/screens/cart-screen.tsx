@@ -5,10 +5,11 @@ import { Label } from "../components/ui/label";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useCart } from "../context/cart-context";
 import { ArrowLeft, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 export function CartScreen() {
   const navigate = useNavigate();
-  const { cart, removeFromCart, getCartTotal, noCutlery, setNoCutlery } = useCart();
+  const { cart, removeFromCart, addToCart, getCartTotal, noCutlery, setNoCutlery } = useCart();
 
   const subtotal = getCartTotal();
   const deliveryFee = 5.00;
@@ -74,7 +75,16 @@ export function CartScreen() {
                 </p>
               </div>
               <button
-                onClick={() => removeFromCart(item.id)}
+                onClick={() => {
+                  removeFromCart(item.id);
+                  toast("Item removed", {
+                    description: item.name,
+                    action: {
+                      label: "Undo",
+                      onClick: () => addToCart(item)
+                    }
+                  });
+                }}
                 className="p-1 h-fit"
               >
                 <Trash2 className="w-5 h-5 text-red-500" />

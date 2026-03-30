@@ -8,6 +8,7 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useCart } from "../context/cart-context";
 import { ArrowLeft, Minus, Plus } from "lucide-react";
 import { foodItems } from "../data/food-data";
+import { toast } from "sonner";
 
 export function ItemScreen() {
   const { id } = useParams();
@@ -47,6 +48,10 @@ export function ItemScreen() {
       customizations,
       quantity: quantity,
       restaurantName: item.restaurantName,
+    });
+
+    toast.success("Added to cart", {
+      description: `${quantity}x ${item.name}`,
     });
 
     navigate("/cart");

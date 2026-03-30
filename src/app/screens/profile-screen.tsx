@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
 import { Home, ShoppingBag, User, ChevronRight, MapPin, CreditCard, Bell, HelpCircle, LogOut } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../components/ui/alert-dialog";
 
 export function ProfileScreen() {
   const navigate = useNavigate();
@@ -67,14 +68,29 @@ export function ProfileScreen() {
         </div>
 
         {/* Logout Button */}
-        <Button
-          variant="outline"
-          className="w-full h-12 gap-2 border-red-200 text-red-600 hover:bg-red-50"
-          onClick={() => navigate("/")}
-        >
-          <LogOut className="w-5 h-5" />
-          Log Out
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full h-12 gap-2 border-red-200 text-red-600 hover:bg-red-50"
+            >
+              <LogOut className="w-5 h-5" />
+              Log Out
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="w-[90%] rounded-lg">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+              <AlertDialogDescription>
+                You will need to enter your phone number and verify your account to log back in.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => navigate("/")} className="bg-red-600 hover:bg-red-700 text-white">Log Out</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       {/* Bottom Navigation */}

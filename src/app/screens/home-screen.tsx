@@ -6,6 +6,7 @@ import { Badge } from "../components/ui/badge";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { MapPin, Search, Home, ShoppingBag, User, Star, Clock, ChevronDown } from "lucide-react";
 import { restaurants, foodItems } from "../data/food-data";
+import { useOrder } from "../context/order-context";
 
 export function HomeScreen() {
   const navigate = useNavigate();
@@ -14,6 +15,9 @@ export function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [currentLocation, setCurrentLocation] = useState("Office Tower B, KL");
+
+  const { orders } = useOrder();
+  const lastOrder = orders.length > 0 ? orders[0] : null;
 
   // Filter restaurants and food based on selected filter and search
   const getFilteredItems = () => {
@@ -105,19 +109,24 @@ export function HomeScreen() {
           <h2 className="text-lg font-semibold mb-3">Quick Reorder</h2>
           <div className="bg-white rounded-lg p-4 shadow-sm flex items-center gap-4">
             <ImageWithFallback
-              src={foodItems[0].image}
-              alt={foodItems[0].name}
+              src={lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].image : foodItems[0].image}
+              alt={lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].name : foodItems[0].name}
               className="w-20 h-20 rounded-lg object-cover"
             />
             <div className="flex-1">
-              <h3 className="font-medium">{foodItems[0].name}</h3>
-              <p className="text-sm text-gray-500">{foodItems[0].restaurantName}</p>
-              <p className="text-orange-600 font-semibold mt-1">RM {foodItems[0].price.toFixed(2)}</p>
+              <h3 className="font-medium">{lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].name : foodItems[0].name}</h3>
+              <p className="text-sm text-gray-500">{lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].restaurantName : foodItems[0].restaurantName}</p>
+              <p className="text-orange-600 font-semibold mt-1">RM {lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].price.toFixed(2) : foodItems[0].price.toFixed(2)}</p>
             </div>
             <Button
               size="sm"
               className="bg-orange-600 hover:bg-orange-700"
-              onClick={() => navigate("/item/1")}
+              onClick={() => {
+                const targetId = lastOrder && lastOrder.items.length > 0
+                  ? foodItems.find(i => i.name === lastOrder.items[0].name)?.id || "1"
+                  : "1";
+                navigate(`/item/${targetId}`);
+              }}
             >
               Order
             </Button>
