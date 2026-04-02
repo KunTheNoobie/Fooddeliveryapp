@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
 import { Switch } from "../components/ui/switch";
@@ -9,11 +10,11 @@ import { toast } from "sonner";
 
 export function CartScreen() {
   const navigate = useNavigate();
-  const { cart, removeFromCart, addToCart, getCartTotal, noCutlery, setNoCutlery } = useCart();
+  const { cart, removeFromCart, addToCart, getCartTotal, noCutlery, setNoCutlery, discount, voucherCode, applyVoucher, removeVoucher } = useCart();
+  const [inputCode, setInputCode] = useState("");
 
   const subtotal = getCartTotal();
   const deliveryFee = 5.00;
-  const discount = 3.00;
   const total = subtotal + deliveryFee - discount;
 
   if (cart.length === 0) {
@@ -112,16 +113,42 @@ export function CartScreen() {
 
         {/* Apply Voucher */}
         <div className="bg-white rounded-lg p-4 mt-4 shadow-sm">
-          <div className="flex gap-2">
-            <input 
-              type="text" 
-              placeholder="Enter Promo Code" 
-              className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500"
-            />
-            <Button className="bg-orange-600 hover:bg-orange-700 whitespace-nowrap">
-              Apply Voucher
-            </Button>
-          </div>
+          {voucherCode ? (
+            <div className="flex items-center justify-between bg-green-50 text-green-700 p-3 rounded-md border border-green-200">
+              <div className="flex flex-col">
+                <span className="font-semibold text-sm">Voucher Applied: {voucherCode}</span>
+                <span className="text-xs">You saved RM {discount.toFixed(2)}</span>
+              </div>
+              <Button onClick={removeVoucher} variant="ghost" className="text-green-700 hover:bg-green-100 hover:text-green-800 p-2 h-auto">
+                Remove
+              </Button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <input 
+                type="text" 
+                placeholder="Enter Promo Code (e.g. SAVE5)" 
+                value={inputCode}
+                onChange={(e) => setInputCode(e.target.value)}
+                className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500"
+              />
+              <Button 
+                onClick={() => {
+                  if (inputCode.trim() === "") return;
+                  const success = applyVoucher(inputCode);
+                  if (success) {
+                    toast.success("Voucher applied successfully!");
+                    setInputCode("");
+                  } else {
+                    toast.error("Invalid voucher code");
+                  }
+                }}
+                className="bg-orange-600 hover:bg-orange-700 whitespace-nowrap"
+              >
+                Apply Voucher
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Summary */}
@@ -138,10 +165,12 @@ export function CartScreen() {
             <span>RM {deliveryFee.toFixed(2)}</span>
           </div>
 
-          <div className="flex justify-between text-sm">
-            <span className="text-green-600">Discount</span>
-            <span className="text-green-600">-RM {discount.toFixed(2)}</span>
-          </div>
+          {discount > 0 && (
+            <div className="flex justify-between text-sm">
+              <span className="text-green-600">Discount</span>
+              <span className="text-green-600">-RM {discount.toFixed(2)}</span>
+            </div>
+          )}
 
           <div className="border-t pt-3 flex justify-between font-semibold text-lg">
             <span>Total</span>

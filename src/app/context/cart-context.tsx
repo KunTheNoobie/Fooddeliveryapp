@@ -18,6 +18,10 @@ interface CartContextType {
   getCartTotal: () => number;
   noCutlery: boolean;
   setNoCutlery: (value: boolean) => void;
+  discount: number;
+  voucherCode: string;
+  applyVoucher: (code: string) => boolean;
+  removeVoucher: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -25,6 +29,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [noCutlery, setNoCutlery] = useState(false);
+  const [discount, setDiscount] = useState(0);
+  const [voucherCode, setVoucherCode] = useState("");
 
   const addToCart = (item: CartItem) => {
     setCart([...cart, item]);
@@ -36,10 +42,35 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setCart([]);
+    setDiscount(0);
+    setVoucherCode("");
   };
 
   const getCartTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const applyVoucher = (code: string) => {
+    const validCode = code.trim().toUpperCase();
+    if (validCode === "SAVE5") {
+      setDiscount(5.0);
+      setVoucherCode(validCode);
+      return true;
+    } else if (validCode === "FREEDEL") {
+      setDiscount(5.0);
+      setVoucherCode(validCode);
+      return true;
+    } else if (validCode === "DISCOUNT10") {
+      setDiscount(10.0);
+      setVoucherCode(validCode);
+      return true;
+    }
+    return false;
+  };
+
+  const removeVoucher = () => {
+    setDiscount(0);
+    setVoucherCode("");
   };
 
   return (
@@ -52,6 +83,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
         getCartTotal,
         noCutlery,
         setNoCutlery,
+        discount,
+        voucherCode,
+        applyVoucher,
+        removeVoucher,
       }}
     >
       {children}
