@@ -155,68 +155,21 @@ export function PaymentScreen() {
         <button type="button" onClick={() => navigate("/cart")} className="p-1">
           <ArrowLeft className="w-6 h-6" />
         </button>
-        <h1 className="text-lg font-semibold">Payment</h1>
+        <h1 className="text-lg font-semibold">Checkout</h1>
       </div>
 
       <div className="px-4 py-6">
-        {/* Payment Methods */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4">Select Payment Method</h2>
-
-          <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
-            <div className="space-y-4">
-              {/* TNG eWallet */}
-              <div className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                <RadioGroupItem value="tng" id="tng" />
-                <Wallet className="w-5 h-5 text-blue-600" />
-                <Label htmlFor="tng" className="flex-1 font-normal cursor-pointer">
-                  TNG eWallet
-                </Label>
-              </div>
-
-              {/* GrabPay */}
-              <div className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                <RadioGroupItem value="grabpay" id="grabpay" />
-                <Wallet className="w-5 h-5 text-green-600" />
-                <Label htmlFor="grabpay" className="flex-1 font-normal cursor-pointer">
-                  GrabPay
-                </Label>
-              </div>
-
-              {/* Maybank2u */}
-              <div className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                <RadioGroupItem value="maybank" id="maybank" />
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center text-xs font-bold">
-                  M
-                </div>
-                <Label htmlFor="maybank" className="flex-1 font-normal cursor-pointer">
-                  Maybank2u
-                </Label>
-              </div>
-
-              {/* Credit Card */}
-              <div className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                <RadioGroupItem value="card" id="card" />
-                <CreditCard className="w-5 h-5 text-gray-600" />
-                <Label htmlFor="card" className="flex-1 font-normal cursor-pointer">
-                  Credit Card
-                </Label>
-              </div>
-            </div>
-          </RadioGroup>
-        </div>
-
         {/* Order Summary */}
-        <div className="bg-white rounded-lg p-4 mt-4 shadow-sm">
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
           <h3 className="font-semibold mb-3">Payment Summary</h3>
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 text-sm text-gray-600">
             <div className="flex justify-between">
-              <span className="text-gray-600">Subtotal</span>
-              <span>RM {subtotal.toFixed(2)}</span>
+              <span>Subtotal</span>
+              <span className="text-gray-900">RM {subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Delivery Fee</span>
-              <span>RM {deliveryFee.toFixed(2)}</span>
+              <span>Delivery Fee</span>
+              <span className="text-gray-900">RM {deliveryFee.toFixed(2)}</span>
             </div>
             {discount > 0 && (
               <div className="flex justify-between">
@@ -225,10 +178,61 @@ export function PaymentScreen() {
               </div>
             )}
           </div>
-          <div className="border-t mt-3 pt-3 flex justify-between font-semibold">
-            <span>Total Payment</span>
+          <div className="border-t border-dashed mt-4 pt-4 flex justify-between font-semibold">
+            <span>Total</span>
             <span className="text-orange-600">RM {total.toFixed(2)}</span>
           </div>
+        </div>
+
+        {/* Payment Methods */}
+        <div className="bg-white rounded-lg p-4 mt-4 shadow-sm border border-gray-100">
+          <h2 className="font-semibold mb-4 text-gray-800">Select Payment Method</h2>
+
+          <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
+            <div className="space-y-3">
+              {/* TNG eWallet */}
+              <div className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'tng' ? 'border-orange-500 bg-orange-50/10 text-orange-700' : 'border-gray-200 hover:bg-gray-50'}`}>
+                <RadioGroupItem value="tng" id="tng" className={paymentMethod === 'tng' ? 'border-orange-500 text-orange-500' : ''} />
+                <div className="flex items-center text-blue-600 gap-1">
+                   <QrCode className="w-5 h-5" />
+                </div>
+                <Label htmlFor="tng" className="flex-1 text-sm font-medium cursor-pointer text-gray-800">
+                  TNG eWallet
+                </Label>
+              </div>
+
+              {/* GrabPay */}
+              <div className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'grabpay' ? 'border-orange-500 bg-orange-50/10 text-orange-700' : 'border-gray-200 hover:bg-gray-50'}`}>
+                <RadioGroupItem value="grabpay" id="grabpay" className={paymentMethod === 'grabpay' ? 'border-orange-500 text-orange-500' : ''} />
+                <div className="flex items-center text-green-600 gap-1">
+                   <QrCode className="w-5 h-5" />
+                </div>
+                <Label htmlFor="grabpay" className="flex-1 text-sm font-medium cursor-pointer text-gray-800">
+                  GrabPay
+                </Label>
+              </div>
+
+              {/* Maybank2u */}
+              <div className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'maybank' ? 'border-orange-500 bg-orange-50/10 text-orange-700' : 'border-gray-200 hover:bg-gray-50'}`}>
+                <RadioGroupItem value="maybank" id="maybank" className={paymentMethod === 'maybank' ? 'border-orange-500 text-orange-500' : ''} />
+                <div className="flex items-center text-yellow-500 gap-1">
+                   <QrCode className="w-5 h-5" />
+                </div>
+                <Label htmlFor="maybank" className="flex-1 text-sm font-medium cursor-pointer text-gray-800">
+                  MAE / Maybank2u
+                </Label>
+              </div>
+
+              {/* Credit Card */}
+              <div className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'card' ? 'border-orange-500 bg-orange-50/10 text-orange-700' : 'border-gray-200 hover:bg-gray-50'}`}>
+                <RadioGroupItem value="card" id="card" className={paymentMethod === 'card' ? 'border-orange-500 text-orange-500' : ''} />
+                <CreditCard className="w-5 h-5 text-gray-600" />
+                <Label htmlFor="card" className="flex-1 text-sm font-medium cursor-pointer text-gray-800">
+                  Credit / Debit Card
+                </Label>
+              </div>
+            </div>
+          </RadioGroup>
         </div>
       </div>
 
@@ -245,7 +249,7 @@ export function PaymentScreen() {
               Processing...
             </>
           ) : (
-            "Confirm Payment"
+            "Confirm payment"
           )}
         </Button>
       </div>
