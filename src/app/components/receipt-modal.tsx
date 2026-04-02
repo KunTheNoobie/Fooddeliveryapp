@@ -75,8 +75,14 @@ Thank you for ordering with QuickBite!
         {/* Success Header */}
         <div className="bg-green-600 text-white p-6 text-center relative">
           <button
-            onClick={onClose}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose();
+            }}
             className="absolute top-4 right-4 text-white hover:bg-green-700 rounded-full p-1"
+            aria-label="Close receipt"
           >
             <X className="w-5 h-5" />
           </button>
