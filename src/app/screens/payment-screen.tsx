@@ -149,7 +149,7 @@ export function PaymentScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <div className="bg-white px-4 py-4 shadow-sm flex items-center gap-3">
         <button type="button" onClick={() => navigate("/cart")} className="p-1">
@@ -158,7 +158,7 @@ export function PaymentScreen() {
         <h1 className="text-lg font-semibold">Checkout</h1>
       </div>
 
-      <div className="px-4 py-6">
+      <div className="px-4 py-6 flex-1">
         {/* Order Summary */}
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
           <h3 className="font-semibold mb-3">Payment Summary</h3>
@@ -237,7 +237,7 @@ export function PaymentScreen() {
       </div>
 
       {/* Sticky Bottom Button */}
-      <div className="fixed bottom-0 inset-x-0 mx-auto w-full max-w-[430px] bg-white border-t border-gray-200 p-4 z-10">
+      <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
         <Button
           onClick={handlePayment}
           disabled={isProcessing || cart.length === 0}
