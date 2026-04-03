@@ -237,7 +237,7 @@ export function PaymentScreen() {
       </div>
 
       {/* Sticky Bottom Button */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-gray-200 p-4 z-10">
+      <div className="fixed bottom-0 inset-x-0 mx-auto w-full max-w-[430px] bg-white border-t border-gray-200 p-4 z-10">
         <Button
           onClick={handlePayment}
           disabled={isProcessing || cart.length === 0}

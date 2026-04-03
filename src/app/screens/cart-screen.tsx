@@ -180,7 +180,7 @@ export function CartScreen() {
       </div>
 
       {/* Sticky Bottom Button */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-gray-200 p-4">
+      <div className="fixed bottom-0 inset-x-0 mx-auto w-full max-w-[430px] bg-white border-t border-gray-200 p-4">
         <Button
           onClick={() => navigate("/payment")}
           className="w-full h-12 bg-orange-600 hover:bg-orange-700"

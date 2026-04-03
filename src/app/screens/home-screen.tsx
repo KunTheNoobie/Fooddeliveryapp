@@ -209,7 +209,7 @@ export function HomeScreen() {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-gray-200 px-6 py-3 flex justify-around">
+      <div className="fixed bottom-0 inset-x-0 mx-auto w-full max-w-[430px] bg-white border-t border-gray-200 px-6 py-3 flex justify-around">
         <button
           onClick={() => setActiveTab("home")}
           className={`flex flex-col items-center gap-1 ${activeTab === "home" ? "text-orange-600" : "text-gray-400"
