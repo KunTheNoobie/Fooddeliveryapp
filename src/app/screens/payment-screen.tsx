@@ -23,7 +23,7 @@ export function PaymentScreen() {
   const { cart, getCartTotal, clearCart, discount } = useCart();
   const { addOrder, setActiveOrder } = useOrder();
 
-  const [paymentMethod, setPaymentMethod] = useState("tng");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showCardForm, setShowCardForm] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
@@ -240,8 +240,8 @@ export function PaymentScreen() {
       <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
         <Button
           onClick={handlePayment}
-          disabled={isProcessing || cart.length === 0}
-          className="w-full h-12 bg-orange-600 hover:bg-orange-700"
+          disabled={isProcessing || cart.length === 0 || !paymentMethod}
+          className={`w-full h-12 ${!paymentMethod || cart.length === 0 ? "bg-gray-300 cursor-not-allowed" : "bg-orange-600 hover:bg-orange-700"}`}
         >
           {isProcessing ? (
             <>

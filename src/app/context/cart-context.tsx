@@ -22,6 +22,7 @@ interface CartContextType {
   voucherCode: string;
   applyVoucher: (code: string) => boolean;
   removeVoucher: () => void;
+  updateQuantity: (id: string, quantity: number) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -38,6 +39,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const removeFromCart = (id: string) => {
     setCart(cart.filter((item) => item.id !== id));
+  };
+
+  const updateQuantity = (id: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(id);
+      return;
+    }
+    setCart(cart.map((item) =>
+      item.id === id ? { ...item, quantity } : item
+    ));
   };
 
   const clearCart = () => {
@@ -87,6 +98,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         voucherCode,
         applyVoucher,
         removeVoucher,
+        updateQuantity,
       }}
     >
       {children}

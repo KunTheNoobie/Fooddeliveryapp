@@ -5,12 +5,12 @@ import { Switch } from "../components/ui/switch";
 import { Label } from "../components/ui/label";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useCart } from "../context/cart-context";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2, Plus, Minus } from "lucide-react";
 import { toast } from "sonner";
 
 export function CartScreen() {
   const navigate = useNavigate();
-  const { cart, removeFromCart, addToCart, getCartTotal, noCutlery, setNoCutlery, discount, voucherCode, applyVoucher, removeVoucher } = useCart();
+  const { cart, removeFromCart, addToCart, getCartTotal, noCutlery, setNoCutlery, discount, voucherCode, applyVoucher, removeVoucher, updateQuantity } = useCart();
   const [inputCode, setInputCode] = useState("");
 
   const subtotal = getCartTotal();
@@ -75,21 +75,38 @@ export function CartScreen() {
                   RM {item.price.toFixed(2)}
                 </p>
               </div>
-              <button
-                onClick={() => {
-                  removeFromCart(item.id);
-                  toast("Item removed", {
-                    description: item.name,
-                    action: {
-                      label: "Undo",
-                      onClick: () => addToCart(item)
-                    }
-                  });
-                }}
-                className="p-1 h-fit"
-              >
-                <Trash2 className="w-5 h-5 text-red-500" />
-              </button>
+              <div className="flex flex-col items-end justify-between">
+                <button
+                  onClick={() => {
+                    removeFromCart(item.id);
+                    toast("Item removed", {
+                      description: item.name,
+                      action: {
+                        label: "Undo",
+                        onClick: () => addToCart(item)
+                      }
+                    });
+                  }}
+                  className="p-1 h-fit hover:bg-red-50 rounded"
+                >
+                  <Trash2 className="w-5 h-5 text-red-500" />
+                </button>
+                <div className="flex items-center gap-3 bg-gray-100 rounded-full px-2 py-1 mt-2">
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    className="w-6 h-6 flex items-center justify-center bg-white rounded-full shadow-sm text-gray-600"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="font-medium text-sm w-4 text-center">{item.quantity}</span>
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    className="w-6 h-6 flex items-center justify-center bg-orange-600 rounded-full shadow-sm text-white"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
         </div>

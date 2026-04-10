@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
-import { Home, ShoppingBag, User, Package, Clock, Star } from "lucide-react";
+import { Home, ShoppingBag, User, Package, Clock, Star, RotateCcw } from "lucide-react";
 import { useOrder } from "../context/order-context";
 import { RatingModal } from "../components/rating-modal";
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { useCart } from "../context/cart-context";
+import { toast } from "sonner";
 
 export function OrdersScreen() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("orders");
   const { orders, updateOrderRating } = useOrder();
+  const { addToCart } = useCart();
 
   const [showRating, setShowRating] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -51,17 +55,26 @@ export function OrdersScreen() {
         <div className="px-4 py-6 space-y-4">
           {orders.map((order) => (
             <div key={order.id} className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="font-semibold text-lg">{order.restaurantName}</h3>
-                  <div className="flex items-center text-sm text-gray-500 gap-1 mt-1">
-                    <Clock className="w-4 h-4" />
-                    {new Date(order.date).toLocaleString("en-MY", {
-                      month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
-                    })}
+              <div className="flex gap-3 mb-3">
+                <ImageWithFallback
+                  src={order.items && order.items.length > 0 ? order.items[0].image : ""}
+                  alt={order.restaurantName}
+                  className="w-16 h-16 rounded-lg object-cover"
+                />
+                <div className="flex-1">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-semibold text-lg">{order.restaurantName}</h3>
+                      <div className="flex items-center text-sm text-gray-500 gap-1 mt-1">
+                        <Clock className="w-4 h-4" />
+                        {new Date(order.date).toLocaleString("en-MY", {
+                          month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+                        })}
+                      </div>
+                    </div>
+                    <span className="text-sm font-medium text-gray-500">{order.id}</span>
                   </div>
                 </div>
-                <span className="text-sm font-medium text-gray-500">{order.id}</span>
               </div>
 
               <div className="border-t border-b border-gray-100 py-3 my-3">
@@ -79,15 +92,30 @@ export function OrdersScreen() {
                   <Package className="w-4 h-4 text-green-600" />
                   <span className="text-sm font-medium text-green-600 capitalize">Delivered</span>
                 </div>
-                <Button
-                  variant={order.rating ? "outline" : "default"}
-                  className={order.rating ? "" : "bg-orange-600 hover:bg-orange-700"}
-                  size="sm"
-                  onClick={() => handleRateClick(order)}
-                >
-                  <Star className="w-4 h-4 mr-1" />
-                  {order.rating ? "View Rating" : "Rate Order"}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-orange-600 text-orange-600 hover:bg-orange-50"
+                    onClick={() => {
+                        order.items.forEach((item: any) => addToCart(item));
+                        toast.success("Items added to cart");
+                        navigate("/cart");
+                    }}
+                  >
+                    <RotateCcw className="w-4 h-4 mr-1" />
+                    Reorder
+                  </Button>
+                  <Button
+                    variant={order.rating ? "outline" : "default"}
+                    className={order.rating ? "" : "bg-orange-600 hover:bg-orange-700"}
+                    size="sm"
+                    onClick={() => handleRateClick(order)}
+                  >
+                    <Star className="w-4 h-4 mr-1" />
+                    {order.rating ? "View Rating" : "Rate Order"}
+                  </Button>
+                </div>
               </div>
             </div>
           ))}

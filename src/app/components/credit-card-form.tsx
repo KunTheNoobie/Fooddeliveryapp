@@ -46,8 +46,8 @@ export function CreditCardForm({ onSubmit, onCancel }: CreditCardFormProps) {
     const cleanCard = cardNumber.replace(/\s/g, "");
 
     // Validate card length and Luhn
-    if (cardNumber.length !== 19 || !isValidLuhn(cleanCard)) {
-      setError("Invalid Card Number: Must pass Luhn validation check.");
+    if (cleanCard.length < 16 || !isValidLuhn(cleanCard)) {
+      setError("Invalid card number length");
       return;
     }
 
@@ -91,18 +91,18 @@ export function CreditCardForm({ onSubmit, onCancel }: CreditCardFormProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="cardNumber" className={error.includes("Card Number") ? "text-red-500" : ""}>Card Number</Label>
+            <Label htmlFor="cardNumber" className={error.includes("Invalid card") ? "text-red-500" : ""}>Card Number</Label>
             <Input
               id="cardNumber"
               placeholder="1234 5678 9012 3456"
               value={cardNumber}
               onChange={(e) => {
                 setCardNumber(formatCardNumber(e.target.value));
-                if (error.includes("Card Number")) setError("");
+                if (error.includes("Invalid card")) setError("");
               }}
               maxLength={19}
               required
-              className={error.includes("Card Number") ? "border-red-500 focus-visible:ring-red-500 text-red-500" : ""}
+              className={error.includes("Invalid card") ? "border-red-500 focus-visible:ring-red-500 text-red-500" : ""}
             />
           </div>
 
