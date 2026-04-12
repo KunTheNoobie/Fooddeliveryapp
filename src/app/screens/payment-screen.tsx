@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { Label } from "../components/ui/label";
-import { ArrowLeft, CreditCard, Wallet, Loader2, ExternalLink, Smartphone } from "lucide-react";
+import { ArrowLeft, CreditCard, Wallet, Loader2, QrCode } from "lucide-react";
 import { CreditCardForm } from "../components/credit-card-form";
 import { ReceiptModal } from "../components/receipt-modal";
 import { useCart } from "../context/cart-context";
@@ -29,7 +29,7 @@ export function PaymentScreen() {
   const [showCardForm, setShowCardForm] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
-  const [step, setStep] = useState<"checkout" | "deeplink">("checkout");
+  const [step, setStep] = useState<"checkout" | "qr">("checkout");
 
   const subtotal = getCartTotal();
   const deliveryFee = 5.0;
@@ -61,16 +61,15 @@ export function PaymentScreen() {
     setShowReceipt(true);
   }, [cart, subtotal, deliveryFee, discount, total, paymentMethod, addOrder, setActiveOrder, clearCart]);
 
-  // Deep-link step: simulate opening wallet app, then process payment automatically
+  // After QR scan step, show authenticating overlay (handled by isProcessing effect below).
   useEffect(() => {
-    if (step !== "deeplink" || showReceipt) return;
+    if (step !== "qr" || showReceipt) return;
     if (!WALLET_METHODS.has(paymentMethod)) return;
     if (cart.length === 0) return;
-    // Simulate the wallet app returning after ~3s (payment approved)
     const t = window.setTimeout(() => {
       setStep("checkout");
       setIsProcessing(true);
-    }, 3000);
+    }, 4000);
     return () => window.clearTimeout(t);
   }, [step, showReceipt, paymentMethod, cart.length]);
 
@@ -86,7 +85,7 @@ export function PaymentScreen() {
     if (paymentMethod === "card") {
       setShowCardForm(true);
     } else if (WALLET_METHODS.has(paymentMethod)) {
-      setStep("deeplink");
+      setStep("qr");
     } else {
       setIsProcessing(true);
     }
@@ -107,60 +106,43 @@ export function PaymentScreen() {
     navigate("/payment", { replace: true });
   };
 
-  // Deep-link / app-to-app payment step
-  if (step === "deeplink" && !showReceipt && WALLET_METHODS.has(paymentMethod)) {
-    const walletName = walletLabel(paymentMethod);
-    const walletEmoji = paymentMethod === "tng" ? "💙" : paymentMethod === "grabpay" ? "💚" : "💛";
-    const walletColor = paymentMethod === "tng" ? "bg-blue-600" : paymentMethod === "grabpay" ? "bg-green-600" : "bg-yellow-500";
-
+  if (step === "qr" && !showReceipt && WALLET_METHODS.has(paymentMethod)) {
     return (
-      <div className="min-h-screen bg-gray-50 pb-6">
+      <div className="min-h-screen bg-gray-50 flex flex-col">
         <div className="bg-white px-4 py-4 shadow-sm flex items-center gap-3">
           <button type="button" onClick={() => setStep("checkout")} className="p-1">
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-lg font-semibold">Pay with {walletName}</h1>
+          <h1 className="text-lg font-semibold">Payment — {walletLabel(paymentMethod)}</h1>
         </div>
 
-        <div className="px-4 py-6">
-          <div className="bg-white rounded-xl p-6 shadow-sm text-center">
-            {/* Wallet icon */}
-            <div className={`w-20 h-20 ${walletColor} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
-              <Smartphone className="w-10 h-10 text-white" />
+        <div className="px-4 py-6 flex-1 flex flex-col justify-center pb-24">
+          <div className="bg-white rounded-lg p-6 shadow-sm flex flex-col items-center text-center">
+            <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center mb-6 text-orange-600 border-4 border-orange-100">
+              <Wallet className="w-10 h-10" />
             </div>
-            <h2 className="text-xl font-bold mb-2">{walletEmoji} Open {walletName}</h2>
-            <p className="text-sm text-gray-600 mb-6">
-              Tap the button below to open <strong>{walletName}</strong> on your device.
-              The payment of <strong className="text-orange-600">RM {total.toFixed(2)}</strong> will be
-              pre-filled — simply confirm it in the app and you'll be returned here automatically.
+            <h2 className="text-xl font-bold mb-3">Pay with {walletLabel(paymentMethod)}</h2>
+            <p className="text-gray-600 mb-8 max-w-xs mx-auto">
+               You will be securely redirected to the {walletLabel(paymentMethod)} app to complete this transaction.
             </p>
-
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-6 text-left">
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-gray-600">Amount</span>
-                <span className="font-bold text-orange-600">RM {total.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Merchant</span>
-                <span className="font-medium">QuickBite</span>
-              </div>
-            </div>
-
+            
             <Button
-              className={`w-full h-12 ${walletColor} hover:opacity-90 text-white flex items-center justify-center gap-2`}
               onClick={() => {
-                // In a real app this would be: window.location.href = `tngd://pay?amount=${total}&merchant=quickbite`;
-                // Here we simulate the wallet app returning after a short delay (already wired via useEffect)
-                toast.success(`Opening ${walletName}...`, { description: "Simulating app-to-app deep link" });
+                // Simulate deep link: In a real app this would be: window.location.href = `tngewallet://pay...`
+                toast(`Opening ${walletLabel(paymentMethod)}...`);
+                setStep("checkout");
+                setIsProcessing(true);
               }}
+              className="w-full h-14 bg-[#015A9C] hover:bg-[#014A82] text-white text-lg font-medium shadow-md transition-transform active:scale-[0.98]"
+              style={{ backgroundColor: paymentMethod === 'grabpay' ? '#00B14F' : paymentMethod === 'maybank' ? '#FFD100' : '#015A9C', color: paymentMethod === 'maybank' ? '#000' : '#fff' }}
             >
-              <ExternalLink className="w-5 h-5" />
-              Open {walletName} to Pay
+              Open {walletLabel(paymentMethod)} App
             </Button>
-
-            <p className="text-xs text-gray-400 mt-4">
-              You will be automatically returned to QuickBite after confirming payment.
-            </p>
+            
+            <div className="border-t border-dashed w-full mt-8 pt-6 flex justify-between items-center text-lg">
+              <span className="text-gray-500 font-medium">Total Amount</span>
+              <span className="text-orange-600 font-bold">RM {total.toFixed(2)}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -213,10 +195,10 @@ export function PaymentScreen() {
               <div className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'tng' ? 'border-orange-500 bg-orange-50/10 text-orange-700' : 'border-gray-200 hover:bg-gray-50'}`}>
                 <RadioGroupItem value="tng" id="tng" className={paymentMethod === 'tng' ? 'border-orange-500 text-orange-500' : ''} />
                 <div className="flex items-center text-blue-600 gap-1">
-                   <Smartphone className="w-5 h-5" />
+                   <QrCode className="w-5 h-5" />
                 </div>
                 <Label htmlFor="tng" className="flex-1 text-sm font-medium cursor-pointer text-gray-800">
-                  TNG eWallet <span className="text-xs text-gray-400 font-normal ml-1">(App-to-App)</span>
+                  TNG eWallet
                 </Label>
               </div>
 
@@ -224,10 +206,10 @@ export function PaymentScreen() {
               <div className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'grabpay' ? 'border-orange-500 bg-orange-50/10 text-orange-700' : 'border-gray-200 hover:bg-gray-50'}`}>
                 <RadioGroupItem value="grabpay" id="grabpay" className={paymentMethod === 'grabpay' ? 'border-orange-500 text-orange-500' : ''} />
                 <div className="flex items-center text-green-600 gap-1">
-                   <Smartphone className="w-5 h-5" />
+                   <QrCode className="w-5 h-5" />
                 </div>
                 <Label htmlFor="grabpay" className="flex-1 text-sm font-medium cursor-pointer text-gray-800">
-                  GrabPay <span className="text-xs text-gray-400 font-normal ml-1">(App-to-App)</span>
+                  GrabPay
                 </Label>
               </div>
 
@@ -235,10 +217,10 @@ export function PaymentScreen() {
               <div className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'maybank' ? 'border-orange-500 bg-orange-50/10 text-orange-700' : 'border-gray-200 hover:bg-gray-50'}`}>
                 <RadioGroupItem value="maybank" id="maybank" className={paymentMethod === 'maybank' ? 'border-orange-500 text-orange-500' : ''} />
                 <div className="flex items-center text-yellow-500 gap-1">
-                   <Smartphone className="w-5 h-5" />
+                   <QrCode className="w-5 h-5" />
                 </div>
                 <Label htmlFor="maybank" className="flex-1 text-sm font-medium cursor-pointer text-gray-800">
-                  MAE / Maybank2u <span className="text-xs text-gray-400 font-normal ml-1">(App-to-App)</span>
+                  MAE / Maybank2u
                 </Label>
               </div>
 

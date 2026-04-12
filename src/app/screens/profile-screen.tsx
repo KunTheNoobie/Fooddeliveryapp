@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
-import { Home, ShoppingBag, User, ChevronRight, MapPin, CreditCard, Bell, HelpCircle, LogOut, Star } from "lucide-react";
+import { Home, ShoppingBag, User, ChevronRight, MapPin, CreditCard, Bell, HelpCircle, LogOut } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../components/ui/alert-dialog";
 
 export function ProfileScreen() {
@@ -55,26 +55,23 @@ export function ProfileScreen() {
           ))}
         </div>
 
-        {/* Rewards Section — now a clickable button leading to Rewards Catalog */}
-        <button
-          onClick={() => navigate("/profile/rewards")}
-          className="w-full text-left bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white hover:from-orange-600 hover:to-orange-700 transition-all active:scale-[0.98]"
+        {/* Rewards Section */}
+        <div 
+          onClick={() => navigate('/profile/rewards')}
+          className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white cursor-pointer hover:shadow-md transition-shadow relative overflow-hidden"
         >
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-semibold">QuickBite Rewards</h3>
-            <div className="flex items-center gap-1 bg-white/20 rounded-full px-3 py-1">
-              <Star className="w-3.5 h-3.5 text-white fill-white" />
-              <span className="text-xs font-bold">View Catalog</span>
+          <div className="relative z-10">
+            <h3 className="text-lg font-semibold mb-2">QuickBite Rewards</h3>
+            <div className="flex items-baseline gap-2 mb-4">
+              <span className="text-4xl font-bold">250</span>
+              <span className="text-sm opacity-90">points</span>
             </div>
+            <p className="text-sm opacity-90">
+              Earn 10 points for every RM1 spent. Redeem for discounts!
+            </p>
           </div>
-          <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-4xl font-bold">250</span>
-            <span className="text-sm opacity-90">points</span>
-          </div>
-          <p className="text-sm opacity-90">
-            Earn 10 points for every RM1 spent. Tap to redeem rewards!
-          </p>
-        </button>
+          <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 text-white opacity-50" />
+        </div>
 
         {/* Logout Button */}
         <AlertDialog>

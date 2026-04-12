@@ -4,7 +4,7 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { MapPin, Search, Home, ShoppingBag, User, Star, Clock, ChevronDown, ShoppingCart, X, ZoomIn } from "lucide-react";
+import { MapPin, Search, Home, ShoppingBag, User, Clock, ChevronDown, ShoppingCart } from "lucide-react";
 import { restaurants, foodItems } from "../data/food-data";
 import { useOrder } from "../context/order-context";
 import { useCart } from "../context/cart-context";
@@ -16,13 +16,11 @@ export function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [currentLocation, setCurrentLocation] = useState("Office Tower B, KL");
-  const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string } | null>(null);
 
   const { orders } = useOrder();
   const { cart } = useCart();
   const lastOrder = orders.length > 0 ? orders[0] : null;
-
-  const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   // Filter restaurants and food based on selected filter and search
   const getFilteredItems = () => {
@@ -69,28 +67,25 @@ export function HomeScreen() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <div className="bg-white px-4 pt-6 pb-4 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-white px-4 pt-6 pb-4 shadow-sm relative">
+        <div className="flex justify-between items-center mb-4">
           <button
             className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-lg -ml-2"
             onClick={() => setShowLocationModal(true)}
           >
             <MapPin className="w-5 h-5 text-orange-600" />
-            <span className="text-sm font-medium flex-1 text-left">{currentLocation}</span>
+            <span className="text-sm font-medium flex-1 text-left max-w-[200px] truncate">{currentLocation}</span>
             <ChevronDown className="w-4 h-4 text-gray-400" />
           </button>
-
-          {/* Floating Cart Icon */}
-          <button
-            id="cart-icon-btn"
-            onClick={() => navigate("/cart")}
-            className="relative p-2 hover:bg-orange-50 rounded-full transition-colors"
+          <button 
+            onClick={() => navigate('/cart')}
+            className="relative p-2 text-gray-600 hover:bg-gray-50 rounded-full"
           >
-            <ShoppingCart className="w-6 h-6 text-gray-700" />
+            <ShoppingCart className="w-6 h-6" />
             {cartItemCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-600 text-white text-xs font-bold rounded-full flex items-center justify-center leading-none">
-                {cartItemCount > 9 ? "9+" : cartItemCount}
-              </span>
+              <Badge className="absolute min-w-5 h-5 flex items-center justify-center -top-1 -right-1 px-1 bg-orange-600 hover:bg-orange-600 text-white text-xs rounded-full border-2 border-white">
+                {cartItemCount}
+              </Badge>
             )}
           </button>
         </div>
@@ -124,29 +119,16 @@ export function HomeScreen() {
         </div>
       </div>
 
-      {/* Order Again (formerly "Quick Reorder") */}
+      {/* Quick Reorder */}
       {!searchQuery && (
         <div className="px-4 mt-6">
-          <h2 className="text-lg font-semibold mb-3">Order Again</h2>
+          <h2 className="text-lg font-semibold mb-3">Recent Orders</h2>
           <div className="bg-white rounded-lg p-4 shadow-sm flex items-center gap-4">
-            <button
-              onClick={() =>
-                setLightboxImage({
-                  src: lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].image : foodItems[0].image,
-                  alt: lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].name : foodItems[0].name,
-                })
-              }
-              className="relative group flex-shrink-0"
-            >
-              <ImageWithFallback
-                src={lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].image : foodItems[0].image}
-                alt={lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].name : foodItems[0].name}
-                className="w-20 h-20 rounded-lg object-cover"
-              />
-              <div className="absolute inset-0 bg-black/30 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <ZoomIn className="w-5 h-5 text-white" />
-              </div>
-            </button>
+            <ImageWithFallback
+              src={lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].image : foodItems[0].image}
+              alt={lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].name : foodItems[0].name}
+              className="w-20 h-20 rounded-lg object-cover"
+            />
             <div className="flex-1">
               <h3 className="font-medium">{lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].name : foodItems[0].name}</h3>
               <p className="text-sm text-gray-500">{lastOrder && lastOrder.items.length > 0 ? lastOrder.items[0].restaurantName : foodItems[0].restaurantName}</p>
@@ -204,24 +186,11 @@ export function HomeScreen() {
                 className="bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() => navigate(`/item/${item.id}`)}
               >
-                {/* Food image with lightbox zoom */}
-                <div className="relative group">
-                  <ImageWithFallback
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-40 object-cover"
-                  />
-                  <button
-                    id={`zoom-item-${item.id}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLightboxImage({ src: item.image, alt: item.name });
-                    }}
-                    className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <ZoomIn className="w-4 h-4" />
-                  </button>
-                </div>
+                <ImageWithFallback
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-40 object-cover"
+                />
                 <div className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -320,28 +289,6 @@ export function HomeScreen() {
               Cancel
             </Button>
           </div>
-        </div>
-      )}
-
-      {/* Lightbox / Image Zoom Modal */}
-      {lightboxImage && (
-        <div
-          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
-          onClick={() => setLightboxImage(null)}
-        >
-          <button
-            className="absolute top-4 right-4 text-white bg-white/20 hover:bg-white/30 rounded-full p-2 transition-colors"
-            onClick={() => setLightboxImage(null)}
-          >
-            <X className="w-6 h-6" />
-          </button>
-          <img
-            src={lightboxImage.src}
-            alt={lightboxImage.alt}
-            className="max-w-full max-h-[80vh] rounded-xl object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
-          <p className="absolute bottom-6 text-white text-sm font-medium opacity-80">{lightboxImage.alt}</p>
         </div>
       )}
     </div>

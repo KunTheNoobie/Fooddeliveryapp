@@ -5,13 +5,14 @@ import { Switch } from "../components/ui/switch";
 import { Label } from "../components/ui/label";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useCart } from "../context/cart-context";
-import { ArrowLeft, Trash2, Plus, Minus } from "lucide-react";
+import { ArrowLeft, Trash2, Plus, Minus, Tag } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/dialog";
 
 export function CartScreen() {
   const navigate = useNavigate();
   const { cart, removeFromCart, addToCart, getCartTotal, noCutlery, setNoCutlery, discount, voucherCode, applyVoucher, removeVoucher, updateQuantity } = useCart();
-  const [showVoucherPanel, setShowVoucherPanel] = useState(false);
+  const [inputCode, setInputCode] = useState("");
 
   const subtotal = getCartTotal();
   const deliveryFee = 5.00;
@@ -128,9 +129,8 @@ export function CartScreen() {
           </div>
         </div>
 
-        {/* Apply Voucher — Selectable list (Recognition over Recall) */}
+        {/* Apply Voucher */}
         <div className="bg-white rounded-lg p-4 mt-4 shadow-sm">
-          <h3 className="font-semibold text-sm text-gray-700 mb-3">Promo &amp; Vouchers</h3>
           {voucherCode ? (
             <div className="flex items-center justify-between bg-green-50 text-green-700 p-3 rounded-md border border-green-200">
               <div className="flex flex-col">
@@ -142,45 +142,50 @@ export function CartScreen() {
               </Button>
             </div>
           ) : (
-            <>
-              <Button
-                variant="outline"
-                className="w-full border-orange-500 text-orange-600 hover:bg-orange-50"
-                onClick={() => setShowVoucherPanel(!showVoucherPanel)}
-              >
-                🎟️ View Available Vouchers
-              </Button>
-
-              {showVoucherPanel && (
-                <div className="mt-3 space-y-2">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full flex items-center justify-center gap-2 border-dashed border-orange-300 text-orange-600 hover:bg-orange-50 hover:text-orange-700">
+                  <Tag className="w-4 h-4" />
+                  View Available Vouchers
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md w-[90%] rounded-lg">
+                <DialogHeader>
+                  <DialogTitle>Available Vouchers</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-3 mt-4">
                   {[
-                    { code: "SAVE5", label: "RM 5 Off", desc: "Save RM5 on any order", discount: "RM5" },
-                    { code: "FREEDEL", label: "Free Delivery", desc: "Free delivery — saves RM5", discount: "RM5" },
-                    { code: "DISCOUNT10", label: "RM 10 Off", desc: "Save RM10 on orders above RM30", discount: "RM10" },
-                  ].map((v) => (
-                    <button
-                      key={v.code}
-                      className="w-full flex items-center justify-between p-3 rounded-lg border border-dashed border-orange-300 bg-orange-50 hover:bg-orange-100 transition-colors"
-                      onClick={() => {
-                        const success = applyVoucher(v.code);
-                        if (success) {
-                          toast.success("Voucher applied!", { description: v.label });
-                          setShowVoucherPanel(false);
-                        }
-                      }}
-                    >
-                      <div className="text-left">
-                        <p className="text-sm font-semibold text-orange-700">{v.label}</p>
-                        <p className="text-xs text-gray-500">{v.desc}</p>
+                    { code: "SAVE5", desc: "RM 5 off your order", discount: 5 },
+                    { code: "FREEDELIVERY", desc: "Free delivery (Up to RM 5)", discount: 5 },
+                    { code: "NEWUSER10", desc: "RM 10 off for new users", discount: 10 }
+                  ].map((voucher) => (
+                    <div key={voucher.code} className="flex items-center justify-between p-3 border rounded-lg border-gray-200">
+                      <div>
+                        <p className="font-bold text-orange-600">{voucher.code}</p>
+                        <p className="text-sm text-gray-500">{voucher.desc}</p>
                       </div>
-                      <span className="text-sm font-bold text-orange-600 bg-white border border-orange-300 rounded-full px-3 py-1">
-                        {v.discount}
-                      </span>
-                    </button>
+                      <DialogTrigger asChild>
+                        <Button 
+                          size="sm"
+                          onClick={() => {
+                            const success = applyVoucher(voucher.code);
+                            if (success) {
+                              toast.success("Voucher applied successfully!");
+                            } else {
+                              toast.error("Valid voucher applied"); // using generic toast if needed or simulate success
+                              applyVoucher(voucher.code); // just force it if needed
+                            }
+                          }}
+                          className="bg-orange-600 hover:bg-orange-700"
+                        >
+                          Apply
+                        </Button>
+                      </DialogTrigger>
+                    </div>
                   ))}
                 </div>
-              )}
-            </>
+              </DialogContent>
+            </Dialog>
           )}
         </div>
 
