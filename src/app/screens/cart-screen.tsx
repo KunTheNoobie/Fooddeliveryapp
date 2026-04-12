@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export function CartScreen() {
   const navigate = useNavigate();
   const { cart, removeFromCart, addToCart, getCartTotal, noCutlery, setNoCutlery, discount, voucherCode, applyVoucher, removeVoucher, updateQuantity } = useCart();
-  const [inputCode, setInputCode] = useState("");
+  const [showVoucherPanel, setShowVoucherPanel] = useState(false);
 
   const subtotal = getCartTotal();
   const deliveryFee = 5.00;
@@ -128,8 +128,9 @@ export function CartScreen() {
           </div>
         </div>
 
-        {/* Apply Voucher */}
+        {/* Apply Voucher — Selectable list (Recognition over Recall) */}
         <div className="bg-white rounded-lg p-4 mt-4 shadow-sm">
+          <h3 className="font-semibold text-sm text-gray-700 mb-3">Promo &amp; Vouchers</h3>
           {voucherCode ? (
             <div className="flex items-center justify-between bg-green-50 text-green-700 p-3 rounded-md border border-green-200">
               <div className="flex flex-col">
@@ -141,30 +142,45 @@ export function CartScreen() {
               </Button>
             </div>
           ) : (
-            <div className="flex gap-2">
-              <input 
-                type="text" 
-                placeholder="Enter Promo Code (e.g. SAVE5)" 
-                value={inputCode}
-                onChange={(e) => setInputCode(e.target.value)}
-                className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500"
-              />
-              <Button 
-                onClick={() => {
-                  if (inputCode.trim() === "") return;
-                  const success = applyVoucher(inputCode);
-                  if (success) {
-                    toast.success("Voucher applied successfully!");
-                    setInputCode("");
-                  } else {
-                    toast.error("Invalid voucher code");
-                  }
-                }}
-                className="bg-orange-600 hover:bg-orange-700 whitespace-nowrap"
+            <>
+              <Button
+                variant="outline"
+                className="w-full border-orange-500 text-orange-600 hover:bg-orange-50"
+                onClick={() => setShowVoucherPanel(!showVoucherPanel)}
               >
-                Apply Voucher
+                🎟️ View Available Vouchers
               </Button>
-            </div>
+
+              {showVoucherPanel && (
+                <div className="mt-3 space-y-2">
+                  {[
+                    { code: "SAVE5", label: "RM 5 Off", desc: "Save RM5 on any order", discount: "RM5" },
+                    { code: "FREEDEL", label: "Free Delivery", desc: "Free delivery — saves RM5", discount: "RM5" },
+                    { code: "DISCOUNT10", label: "RM 10 Off", desc: "Save RM10 on orders above RM30", discount: "RM10" },
+                  ].map((v) => (
+                    <button
+                      key={v.code}
+                      className="w-full flex items-center justify-between p-3 rounded-lg border border-dashed border-orange-300 bg-orange-50 hover:bg-orange-100 transition-colors"
+                      onClick={() => {
+                        const success = applyVoucher(v.code);
+                        if (success) {
+                          toast.success("Voucher applied!", { description: v.label });
+                          setShowVoucherPanel(false);
+                        }
+                      }}
+                    >
+                      <div className="text-left">
+                        <p className="text-sm font-semibold text-orange-700">{v.label}</p>
+                        <p className="text-xs text-gray-500">{v.desc}</p>
+                      </div>
+                      <span className="text-sm font-bold text-orange-600 bg-white border border-orange-300 rounded-full px-3 py-1">
+                        {v.discount}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
 

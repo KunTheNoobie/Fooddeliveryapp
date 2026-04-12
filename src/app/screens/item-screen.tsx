@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 import { Label } from "../components/ui/label";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useCart } from "../context/cart-context";
-import { ArrowLeft, Minus, Plus } from "lucide-react";
+import { ArrowLeft, Minus, Plus, ZoomIn, X } from "lucide-react";
 import { foodItems } from "../data/food-data";
 import { toast } from "sonner";
 
@@ -20,6 +20,7 @@ export function ItemScreen() {
   const [selectedCustomizations, setSelectedCustomizations] = useState<string[]>([]);
   const [selectedPortionIndex, setSelectedPortionIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const basePrice = item.price;
   const portionExtra = item.customizations.portionOptions[selectedPortionIndex].price;
@@ -59,8 +60,8 @@ export function ItemScreen() {
 
   return (
     <div className="min-h-screen bg-white pb-24">
-      {/* Header Image */}
-      <div className="relative">
+      {/* Header Image — click to zoom */}
+      <div className="relative group">
         <ImageWithFallback
           src={item.image}
           alt={item.name}
@@ -71,6 +72,14 @@ export function ItemScreen() {
           className="absolute top-4 left-4 bg-white rounded-full p-2 shadow-md"
         >
           <ArrowLeft className="w-5 h-5" />
+        </button>
+        {/* Zoom button */}
+        <button
+          id="zoom-food-img"
+          onClick={() => setLightboxOpen(true)}
+          className="absolute bottom-3 right-3 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          <ZoomIn className="w-5 h-5" />
         </button>
       </div>
 
@@ -165,6 +174,28 @@ export function ItemScreen() {
           Add to Cart - RM {finalPrice.toFixed(2)}
         </Button>
       </div>
+
+      {/* Lightbox */}
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white bg-white/20 hover:bg-white/30 rounded-full p-2 transition-colors"
+            onClick={() => setLightboxOpen(false)}
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <img
+            src={item.image}
+            alt={item.name}
+            className="max-w-full max-h-[80vh] rounded-xl object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <p className="absolute bottom-6 text-white text-sm font-medium opacity-80">{item.name}</p>
+        </div>
+      )}
     </div>
   );
 }

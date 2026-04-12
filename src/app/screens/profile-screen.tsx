@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "../components/ui/button";
-import { Home, ShoppingBag, User, ChevronRight, MapPin, CreditCard, Bell, HelpCircle, LogOut } from "lucide-react";
+import { Home, ShoppingBag, User, ChevronRight, MapPin, CreditCard, Bell, HelpCircle, LogOut, Star } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../components/ui/alert-dialog";
 
 export function ProfileScreen() {
@@ -55,17 +55,26 @@ export function ProfileScreen() {
           ))}
         </div>
 
-        {/* Rewards Section */}
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white">
-          <h3 className="text-lg font-semibold mb-2">QuickBite Rewards</h3>
+        {/* Rewards Section — now a clickable button leading to Rewards Catalog */}
+        <button
+          onClick={() => navigate("/profile/rewards")}
+          className="w-full text-left bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white hover:from-orange-600 hover:to-orange-700 transition-all active:scale-[0.98]"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-semibold">QuickBite Rewards</h3>
+            <div className="flex items-center gap-1 bg-white/20 rounded-full px-3 py-1">
+              <Star className="w-3.5 h-3.5 text-white fill-white" />
+              <span className="text-xs font-bold">View Catalog</span>
+            </div>
+          </div>
           <div className="flex items-baseline gap-2 mb-4">
             <span className="text-4xl font-bold">250</span>
             <span className="text-sm opacity-90">points</span>
           </div>
           <p className="text-sm opacity-90">
-            Earn 10 points for every RM1 spent. Redeem for discounts!
+            Earn 10 points for every RM1 spent. Tap to redeem rewards!
           </p>
-        </div>
+        </button>
 
         {/* Logout Button */}
         <AlertDialog>

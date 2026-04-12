@@ -11,6 +11,7 @@ import { SavedAddressesScreen } from "./screens/saved-addresses-screen";
 import { PaymentMethodsScreen } from "./screens/payment-methods-screen";
 import { NotificationsScreen } from "./screens/notifications-screen";
 import { SupportScreen } from "./screens/support-screen";
+import { RewardsScreen } from "./screens/rewards-screen";
 
 export const router = createBrowserRouter(
   [
@@ -61,6 +62,10 @@ export const router = createBrowserRouter(
     {
       path: "/profile/support",
       Component: SupportScreen,
+    },
+    {
+      path: "/profile/rewards",
+      Component: RewardsScreen,
     },
   ], {
   basename: "/Fooddeliveryapp"
